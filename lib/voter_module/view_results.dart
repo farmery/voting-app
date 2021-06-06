@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vote_app/models/candidate.dart';
-import 'package:vote_app/models/post.dart';
-import 'package:vote_app/services/database.dart';
 
 class ViewResults extends StatefulWidget {
   @override
@@ -56,7 +53,7 @@ class _ViewResultsState extends State<ViewResults> {
                           ],
                         ),
                       ),
-                      // a list of posts
+                      // a list of posts results
                     ],
                   ),
                 )),

@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
 import 'package:vote_app/voter_module/post_detail.dart';
-import 'package:vote_app/voter_module/view_results.dart';
 
 class VoterHomeScreen extends StatefulWidget {
   @override
