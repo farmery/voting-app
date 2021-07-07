@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vote_app/models/candidate.dart';
+import 'package:vote_app/models/post.dart';
 import 'package:vote_app/services/database.dart';
 
 class AddCandidates extends StatefulWidget {
@@ -34,22 +35,28 @@ class _AddCandidatesState extends State<AddCandidates> {
                 height: 8,
               ),
               Expanded(
-                  child: ListView.builder(
-                      itemCount: candidates?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: <Widget>[
-                            ListTile(
-                              title: Text(
-                                candidates.elementAt(index).candidateName,
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              subtitle:
-                                  Text(candidates.elementAt(index).matricNo),
-                            ),
-                            Divider()
-                          ],
-                        );
+                  child: StreamBuilder<List<Candidate>>(
+                      stream: database
+                          .getCandidates(Post(titleOfPost: widget.titleOfPost)),
+                      builder: (_, snapshot) {
+                        final candidates = snapshot?.data;
+                        return ListView.builder(
+                            itemCount: candidates?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: <Widget>[
+                                  ListTile(
+                                    title: Text(
+                                      candidates.elementAt(index).candidateName,
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    subtitle: Text(
+                                        candidates.elementAt(index).matricNo),
+                                  ),
+                                  Divider()
+                                ],
+                              );
+                            });
                       })),
             ],
           ),
@@ -102,12 +109,24 @@ class _AddCandidatesState extends State<AddCandidates> {
                                   if (candidateName != null &&
                                       candidateMatricNo != null) {
                                     //add candidate
+                                    var candidate = Candidate(
+                                        post: widget.titleOfPost,
+                                        candidateName: candidateName,
+                                        matricNo: candidateMatricNo);
                                     setState(() {
-                                      candidates.add(Candidate(
-                                          candidateName: candidateName,
-                                          matricNo: candidateMatricNo));
+                                      candidates.add(candidate);
                                     });
-                                    Navigator.of(context).pop();
+                                    Database()
+                                        .addCandidate(candidate)
+                                        .then((value) =>
+                                            Navigator.of(context).pop())
+                                        .catchError((e) {
+                                      print(e);
+                                      ScaffoldMessengerState().showSnackBar(
+                                          SnackBar(
+                                              content: Text(
+                                                  'Please check your internet connection')));
+                                    });
                                   }
                                 })
                           ],

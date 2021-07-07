@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vote_app/admin_module/new_election.dart';
 import 'package:vote_app/admin_module/ongoing_election.dart';
-import 'package:vote_app/services/auth.dart';
 
 class AdminHome extends StatefulWidget {
   @override

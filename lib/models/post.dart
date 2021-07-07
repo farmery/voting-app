@@ -1,11 +1,23 @@
+import 'dart:convert';
+
 class Post {
-  String nameOfElection;
   String titleOfPost;
 
-  Post({this.titleOfPost, this.nameOfElection});
+  Post({this.titleOfPost});
 
-  factory Post.fromFirebase(Map map) {
+  factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
-        titleOfPost: map['nameOfPost'], nameOfElection: map['nameOfElection']);
+      titleOfPost: map['titleOfPost'] ?? '',
+    );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'titleOfPost': titleOfPost,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Post.fromJson(String source) => Post.fromMap(json.decode(source));
 }

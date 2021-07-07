@@ -64,28 +64,33 @@ class _PostDetailState extends State<PostDetail> {
                         ),
                       ),
                       //list of candidates
-                      Expanded(
-                          child: ListView.builder(
-                              itemCount: 3,
-                              itemBuilder: (_, i) => Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: ListTile(
-                                      title: Text('Tomiwa dahunsi'),
-                                      subtitle: Text('10 candidates'),
-                                      tileColor: Color(0xff021c1e),
-                                      trailing: CupertinoButton(
-                                        onPressed: () {},
-                                        padding: EdgeInsets.zero,
-                                        child: Text(
-                                          'Vote',
-                                          style: TextStyle(color: Colors.green),
-                                        ),
-                                      ),
-                                      shape: ContinuousRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                    ),
-                                  )))
+                      StreamBuilder<List<Candidate>>(
+                          stream: null,
+                          builder: (context, snapshot) {
+                            return Expanded(
+                                child: ListView.builder(
+                                    itemCount: 3,
+                                    itemBuilder: (_, i) => Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: ListTile(
+                                            title: Text('Tomiwa dahunsi'),
+                                            subtitle: Text('10 candidates'),
+                                            tileColor: Color(0xff021c1e),
+                                            trailing: CupertinoButton(
+                                              onPressed: () {},
+                                              padding: EdgeInsets.zero,
+                                              child: Text(
+                                                'Vote',
+                                                style: TextStyle(
+                                                    color: Colors.green),
+                                              ),
+                                            ),
+                                            shape: ContinuousRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                          ),
+                                        )));
+                          })
                     ],
                   ),
                 )),

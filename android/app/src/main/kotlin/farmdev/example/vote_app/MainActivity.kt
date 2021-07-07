@@ -1,4 +1,4 @@
-package com.example.vote_app
+package com.farmdev.vote_app
 
 import io.flutter.embedding.android.FlutterActivity
 

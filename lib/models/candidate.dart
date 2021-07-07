@@ -1,32 +1,25 @@
 import 'dart:convert';
 
 class Candidate {
+  String post;
   String candidateName;
   String matricNo;
-  int noOfVotes;
 
-  Candidate({this.candidateName, this.matricNo, this.noOfVotes});
-
-  factory Candidate.fromFirebase(Map map) {
-    return Candidate(
-        candidateName: map['candidateName'],
-        matricNo: map['matricNo'],
-        noOfVotes: map['noOfVotes']);
-  }
+  Candidate({this.candidateName, this.matricNo, this.post});
 
   Map<String, dynamic> toMap() {
     return {
+      'post': post,
       'candidateName': candidateName,
       'matricNo': matricNo,
-      'noOfVotes': noOfVotes,
     };
   }
 
-  factory Candidate.fromMap(Map<String, dynamic> map) {
+  factory Candidate.fromMap(Map map) {
     return Candidate(
+      post: map['post'] ?? '',
       candidateName: map['candidateName'] ?? '',
       matricNo: map['matricNo'] ?? '',
-      noOfVotes: map['noOfVotes'] ?? 0,
     );
   }
 

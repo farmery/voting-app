@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:vote_app/models/post.dart';
 import 'package:vote_app/voter_module/post_detail.dart';
 
 class VoterHomeScreen extends StatefulWidget {
@@ -190,32 +191,37 @@ class PlaceYourVote extends StatelessWidget {
                       ),
                     ),
                     //list of posts
-                    Expanded(
-                        child: ListView.builder(
-                            itemCount: 3,
-                            itemBuilder: (_, i) => Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: ListTile(
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .push(CupertinoPageRoute(
-                                              builder: (_) => PostDetail(
-                                                    titleOfPost:
-                                                        posts.elementAt(i),
-                                                  )));
-                                    },
-                                    title: Text(posts.elementAt(i)),
-                                    subtitle: Text('10 candidates'),
-                                    tileColor: Color(0xff021c1e),
-                                    trailing: Text(
-                                      '2 days left',
-                                      style: TextStyle(color: Colors.green),
-                                    ),
-                                    shape: ContinuousRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                  ),
-                                )))
+                    StreamBuilder<List<Post>>(
+                        stream: null,
+                        builder: (context, snapshot) {
+                          return Expanded(
+                              child: ListView.builder(
+                                  itemCount: 3,
+                                  itemBuilder: (_, i) => Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: ListTile(
+                                          onTap: () {
+                                            Navigator.of(context)
+                                                .push(CupertinoPageRoute(
+                                                    builder: (_) => PostDetail(
+                                                          titleOfPost: posts
+                                                              .elementAt(i),
+                                                        )));
+                                          },
+                                          title: Text(posts.elementAt(i)),
+                                          subtitle: Text('10 candidates'),
+                                          tileColor: Color(0xff021c1e),
+                                          trailing: Text(
+                                            'On going',
+                                            style:
+                                                TextStyle(color: Colors.green),
+                                          ),
+                                          shape: ContinuousRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                        ),
+                                      )));
+                        })
                   ],
                 ),
               )),

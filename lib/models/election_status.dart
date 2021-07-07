@@ -1,0 +1,1 @@
+enum ElectionStatus { onGoing, ended }

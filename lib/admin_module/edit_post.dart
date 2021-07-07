@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vote_app/models/candidate.dart';
+import 'package:vote_app/models/post.dart';
 import 'package:vote_app/services/database.dart';
 
 class EditPost extends StatefulWidget {
@@ -33,6 +35,37 @@ class _EditPostState extends State<EditPost> {
                 height: 16,
               ),
               // edit post
+              Expanded(
+                  child: StreamBuilder<List<Candidate>>(
+                stream: database
+                    .getCandidates(Post(titleOfPost: widget.titleOfPost)),
+                builder: (_, snapshot) {
+                  final candidates = snapshot?.data;
+                  return ListView.builder(
+                      itemCount: candidates?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(
+                                candidates.elementAt(index).candidateName,
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              subtitle:
+                                  Text(candidates.elementAt(index).matricNo),
+                              trailing: CupertinoButton(
+                                  padding: EdgeInsets.zero,
+                                  child: Icon(Icons.clear),
+                                  onPressed: () {
+                                    database.deleteCandidate(candidates[index]);
+                                  }),
+                            ),
+                            Divider()
+                          ],
+                        );
+                      });
+                },
+              )),
             ],
           ),
         ),
@@ -84,8 +117,20 @@ class _EditPostState extends State<EditPost> {
                                   if (candidateName != null &&
                                       candidateMatricNo != null) {
                                     //add candidate
-
-                                    Navigator.of(context).pop();
+                                    database
+                                        .addCandidate(Candidate(
+                                            candidateName: candidateName,
+                                            matricNo: candidateMatricNo,
+                                            post: widget.titleOfPost))
+                                        .then((value) =>
+                                            Navigator.of(context).pop())
+                                        .catchError((e) {
+                                      ScaffoldMessengerState().showSnackBar(
+                                          SnackBar(
+                                              content: Text(
+                                                  'Please check your internet connection')));
+                                      print(e);
+                                    });
                                   }
                                 })
                           ],

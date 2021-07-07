@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:vote_app/admin_module/add_candidate.dart';
 
 import 'package:vote_app/models/candidate.dart';
+import 'package:vote_app/models/post.dart';
 import 'package:vote_app/services/database.dart';
+
+import 'edit_post.dart';
 
 class NewElection extends StatefulWidget {
   @override
@@ -130,25 +133,44 @@ class _ListOfPostsFromDbState extends State<ListOfPostsFromDb> {
           //list of registered posts
           SizedBox(height: 8),
           Expanded(
-            child: ListView.separated(
-                itemCount: 4,
-                separatorBuilder: (_, i) => Divider(
-                      height: 0,
-                      indent: 16,
-                      endIndent: 16,
-                      color: Colors.white.withOpacity(0.5),
-                    ),
-                itemBuilder: (_, i) => Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16, right: 16, bottom: 8, top: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Departmental President'),
-                          Icon(Icons.edit, size: 14)
-                        ],
-                      ),
-                    )),
+            child: StreamBuilder<List<Post>>(
+                stream: Database().getPosts(),
+                builder: (context, snapshot) {
+                  final posts = snapshot?.data ?? [];
+                  return ListView.separated(
+                      itemCount: posts.length,
+                      separatorBuilder: (_, i) => Divider(
+                            height: 0,
+                            indent: 16,
+                            endIndent: 16,
+                            color: Colors.white.withOpacity(0.5),
+                          ),
+                      itemBuilder: (_, i) => GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (_) => EditPost(
+                                        titleOfPost: posts[i].titleOfPost,
+                                        titleOfElection: 'new election',
+                                      )));
+                            },
+                            child: Container(
+                              color: Colors.transparent,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16, right: 16, bottom: 8, top: 8),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(posts[i].titleOfPost,
+                                        style: TextStyle(fontSize: 18)),
+                                    Icon(Icons.edit, size: 18)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ));
+                }),
           )
         ],
       ),
@@ -196,6 +218,7 @@ class NewPostWidget extends StatelessWidget {
                   color: Colors.red,
                   onPressed: () {
                     if (titleOfPost != null) {
+                      Database().createPost(Post(titleOfPost: titleOfPost));
                       Navigator.of(context).push(CupertinoPageRoute(
                           builder: (context) => AddCandidates(
                                 titleOfPost: titleOfPost,
