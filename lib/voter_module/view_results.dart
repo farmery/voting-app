@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:vote_app/admin_module/ongoing_poll.dart';
+import 'package:vote_app/models/post.dart';
+import 'package:vote_app/services/database.dart';
 
 class ViewResults extends StatefulWidget {
   @override
@@ -54,6 +57,21 @@ class _ViewResultsState extends State<ViewResults> {
                         ),
                       ),
                       // a list of posts results
+                      Expanded(
+                        child: StreamBuilder<List<Post>>(
+                          stream: Database().getPosts(),
+                          builder: (context, snapshot) {
+                            final posts = snapshot?.data ?? [];
+                            return ListView.builder(
+                              itemBuilder: (_, i) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: OnGoingPoll(posts: posts, i: i),
+                              ),
+                              itemCount: posts.length,
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 )),

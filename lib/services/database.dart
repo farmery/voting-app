@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vote_app/models/candidate.dart';
 import 'package:vote_app/models/election_status.dart';
 import 'package:vote_app/models/post.dart';
+import 'package:vote_app/models/vote.dart';
 
 class Database {
   CollectionReference candidatesCollection =
@@ -47,27 +48,28 @@ class Database {
   }
 
   // cast vote
-  void castVote(Candidate candidate, String voterId) {
-    postsCollection
+  Future castVote(Candidate candidate, String voterId) {
+    return postsCollection
         .doc(candidate.post)
         .collection('votes')
-        .doc(candidate.candidateName + voterId)
-        .set({'candidateName': candidate.candidateName});
+        .doc(voterId)
+        .set({'candidateName': candidate.candidateName, 'voter': voterId});
   }
 
   //get votes
-  Future<int> getVotesNo(Candidate candidate) {
+  Stream<List<Vote>> getVotes(Candidate candidate) {
     return postsCollection
         .doc(candidate.post)
         .collection('votes')
         .where('candidateName', isEqualTo: candidate.candidateName)
         .snapshots()
-        .length;
+        .map((snapshots) =>
+            snapshots.docs.map((vote) => Vote.fromMap(vote.data())).toList());
   }
 
   //set election status
   Future setElectionStatus(ElectionStatus status) {
-    return statusCollection.doc('status').set({'status': status});
+    return statusCollection.doc('status').set({'status': status.toString()});
   }
 
   //get election status

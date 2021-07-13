@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vote_app/services/auth.dart';
 
+import 'voter_home.dart';
+
 class LoginWithGoogle extends StatefulWidget {
   @override
   _LoginWithGoogleState createState() => _LoginWithGoogleState();
@@ -12,12 +14,9 @@ class _LoginWithGoogleState extends State<LoginWithGoogle> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Color(0xff021c1e),
           elevation: 0,
-          backgroundColor: Colors.white,
-          actionsIconTheme: IconThemeData(color: Colors.black),
         ),
-        backgroundColor: Colors.white,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,7 +44,12 @@ class _LoginWithGoogleState extends State<LoginWithGoogle> {
               padding: const EdgeInsets.fromLTRB(32, 0, 32, 32),
               child: CupertinoButton(
                   borderRadius: BorderRadius.circular(45),
-                  onPressed: () {},
+                  onPressed: () {
+                    AuthService().signIn().then((e) {
+                      Navigator.of(context).push(CupertinoPageRoute(
+                          builder: (_) => VoterHomeScreen()));
+                    });
+                  },
                   child: Container(
                     decoration: BoxDecoration(
                         color: Color(0xffFF0000),

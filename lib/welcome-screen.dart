@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vote_app/admin_module/admin_wrapper.dart';
 import 'package:vote_app/voter_module/voter_wrapper.dart';
+
+import 'services/auth.dart';
 
 class WelcomeScreen extends StatelessWidget {
   @override
@@ -37,7 +40,9 @@ class WelcomeScreen extends StatelessWidget {
               onPressed: () async {
                 await Navigator.of(context)
                     .push(CupertinoPageRoute(builder: (context) {
-                  return VoterWrapper();
+                  return StreamProvider.value(
+                      value: AuthService().onCurrentUserChange(),
+                      child: VoterWrapper());
                 }));
               },
               child: Container(
@@ -59,7 +64,9 @@ class WelcomeScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).push(CupertinoPageRoute(
                     title: 'Admin Wrapper',
-                    builder: (context) => AdminWrapper()));
+                    builder: (context) => StreamProvider.value(
+                        value: AuthService().getAuthState(),
+                        child: AdminWrapper())));
               },
               child: Container(
                 decoration: BoxDecoration(

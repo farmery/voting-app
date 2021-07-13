@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vote_app/admin_module/admin_home.dart';
@@ -11,8 +12,8 @@ class AdminWrapper extends StatefulWidget {
 class _AdminWrapperState extends State<AdminWrapper> {
   @override
   Widget build(BuildContext context) {
-    // final user = Provider.of<User>(context);
-    final user = {};
+    final user = Provider.of<User>(context);
+    // final user = {};
     return user == null ? LoginWithCredentails() : AdminHome();
   }
 }

@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:vote_app/models/candidate.dart';
-
+import 'package:vote_app/models/post.dart';
 import 'package:vote_app/services/database.dart';
 
 class PostDetail extends StatefulWidget {
@@ -17,6 +16,7 @@ class PostDetail extends StatefulWidget {
 }
 
 class _PostDetailState extends State<PostDetail> {
+  Database database = Database();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,19 +65,34 @@ class _PostDetailState extends State<PostDetail> {
                       ),
                       //list of candidates
                       StreamBuilder<List<Candidate>>(
-                          stream: null,
+                          stream: database.getCandidates(
+                              Post(titleOfPost: widget.titleOfPost)),
                           builder: (context, snapshot) {
+                            final candidates = snapshot?.data ?? [];
                             return Expanded(
                                 child: ListView.builder(
-                                    itemCount: 3,
+                                    itemCount: candidates.length ?? 0,
                                     itemBuilder: (_, i) => Padding(
                                           padding: const EdgeInsets.all(4.0),
                                           child: ListTile(
-                                            title: Text('Tomiwa dahunsi'),
-                                            subtitle: Text('10 candidates'),
+                                            title: Text(
+                                                candidates[i].candidateName),
+                                            subtitle:
+                                                Text(candidates[i].matricNo),
                                             tileColor: Color(0xff021c1e),
                                             trailing: CupertinoButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                database
+                                                    .castVote(candidates[i],
+                                                        'voterId')
+                                                    .then((value) => showDialog(
+                                                        context: context,
+                                                        builder: (_) =>
+                                                            AlertDialog(
+                                                              content: Text(
+                                                                  'You Vote for ${candidates[i].candidateName} has been placed'),
+                                                            )));
+                                              },
                                               padding: EdgeInsets.zero,
                                               child: Text(
                                                 'Vote',

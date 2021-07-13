@@ -16,12 +16,9 @@ class _LoginWithCredentailsState extends State<LoginWithCredentails> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.black),
           elevation: 0,
-          backgroundColor: Colors.white,
-          actionsIconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Color(0xff021c1e),
         ),
-        backgroundColor: Colors.white,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -51,16 +48,21 @@ class _LoginWithCredentailsState extends State<LoginWithCredentails> {
                 child: Column(
                   children: <Widget>[
                     TextFormField(
-                      onFieldSubmitted: (email) {
-                        this.email = email;
+                      onChanged: (email) {
+                        setState(() {
+                          this.email = email;
+                        });
+                        print(email);
                       },
                       decoration:
                           InputDecoration(labelText: 'Enter email address'),
                     ),
                     TextFormField(
                       obscureText: true,
-                      onFieldSubmitted: (password) {
-                        this.password = password;
+                      onChanged: (password) {
+                        setState(() {
+                          this.password = password;
+                        });
                       },
                       decoration:
                           InputDecoration(labelText: 'Enter your password'),
@@ -71,9 +73,14 @@ class _LoginWithCredentailsState extends State<LoginWithCredentails> {
                     CupertinoButton(
                         borderRadius: BorderRadius.circular(45),
                         onPressed: () {
-                          // AuthService().adminSignIn(email, password);
-                          Scaffold.of(context).showSnackBar(
-                              SnackBar(content: Text('Login successful')));
+                          AuthService()
+                              .signInWithCredentials(email, password)
+                              .catchError((e) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(content: Text(e)));
+                          }).then((value) => ScaffoldMessenger.of(context)
+                                  .showSnackBar(
+                                      SnackBar(content: Text(value))));
                         },
                         child: Container(
                           decoration: BoxDecoration(

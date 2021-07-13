@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:vote_app/admin_module/ongoing_poll.dart';
 import 'package:vote_app/models/post.dart';
+import 'package:vote_app/services/database.dart';
 import 'package:vote_app/voter_module/post_detail.dart';
 
 class VoterHomeScreen extends StatefulWidget {
@@ -80,7 +82,22 @@ class _VoterHomeScreenState extends State<VoterHomeScreen> {
             ],
           ),
           body: PageView(controller: pageController, children: [
-            PlaceYourVote(),
+            FutureBuilder<Map>(
+                future: Database().getElectionStatus(),
+                builder: (context, snapshot) {
+                  String status;
+                  if (snapshot.data != null) {
+                    status = snapshot.data['status'];
+                  } else {
+                    status = 'ongoing';
+                  }
+                  return status == 'ongoing'
+                      ? PlaceYourVote()
+                      : Container(
+                          child: Text('Election Ended',
+                              style: TextStyle(fontSize: 30)),
+                        );
+                }),
             Results(),
           ])),
     );
@@ -131,6 +148,21 @@ class Results extends StatelessWidget {
                       ),
                     ),
                     //list of posts
+                    Expanded(
+                      child: StreamBuilder<List<Post>>(
+                        stream: Database().getPosts(),
+                        builder: (context, snapshot) {
+                          final posts = snapshot?.data ?? [];
+                          return ListView.builder(
+                            itemBuilder: (_, i) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: OnGoingPoll(posts: posts, i: i),
+                            ),
+                            itemCount: posts.length,
+                          );
+                        },
+                      ),
+                    ),
                   ],
                 ),
               )),
@@ -147,12 +179,7 @@ class PlaceYourVote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List posts = [
-      'Department president',
-      'Treasurer',
-      'Social president',
-      'Student representative',
-    ];
+    Database database = Database();
 
     return Stack(
       children: <Widget>[
@@ -192,11 +219,12 @@ class PlaceYourVote extends StatelessWidget {
                     ),
                     //list of posts
                     StreamBuilder<List<Post>>(
-                        stream: null,
+                        stream: database.getPosts(),
                         builder: (context, snapshot) {
+                          final posts = snapshot.data ?? [];
                           return Expanded(
                               child: ListView.builder(
-                                  itemCount: 3,
+                                  itemCount: posts.length ?? 0,
                                   itemBuilder: (_, i) => Padding(
                                         padding: const EdgeInsets.all(4.0),
                                         child: ListTile(
@@ -205,17 +233,31 @@ class PlaceYourVote extends StatelessWidget {
                                                 .push(CupertinoPageRoute(
                                                     builder: (_) => PostDetail(
                                                           titleOfPost: posts
-                                                              .elementAt(i),
+                                                              .elementAt(i)
+                                                              .titleOfPost,
                                                         )));
                                           },
-                                          title: Text(posts.elementAt(i)),
+                                          title: Text(
+                                              posts.elementAt(i).titleOfPost),
                                           subtitle: Text('10 candidates'),
                                           tileColor: Color(0xff021c1e),
-                                          trailing: Text(
-                                            'On going',
-                                            style:
-                                                TextStyle(color: Colors.green),
-                                          ),
+                                          trailing: FutureBuilder<Map>(
+                                              future:
+                                                  database.getElectionStatus(),
+                                              builder: (context, snapshot) {
+                                                String status;
+                                                if (snapshot.data != null) {
+                                                  status =
+                                                      snapshot.data['status'];
+                                                } else {
+                                                  status = 'Ongoing';
+                                                }
+                                                return Text(
+                                                  status,
+                                                  style: TextStyle(
+                                                      color: Colors.green),
+                                                );
+                                              }),
                                           shape: ContinuousRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(15)),

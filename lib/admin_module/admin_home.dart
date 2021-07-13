@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vote_app/admin_module/new_election.dart';
 import 'package:vote_app/admin_module/ongoing_election.dart';
+import 'package:vote_app/services/auth.dart';
 
 class AdminHome extends StatefulWidget {
   @override
@@ -63,7 +64,13 @@ class _AdminHomeState extends State<AdminHome> {
             actions: <Widget>[
               TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    AuthService()
+                        .logOutAdmin()
+                        .then((value) => Navigator.of(context).pop())
+                        .catchError((e) {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(e)));
+                    });
                   },
                   child: Text('Logout'))
             ],
