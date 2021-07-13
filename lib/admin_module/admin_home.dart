@@ -64,13 +64,7 @@ class _AdminHomeState extends State<AdminHome> {
             actions: <Widget>[
               TextButton(
                   onPressed: () {
-                    AuthService()
-                        .logOutAdmin()
-                        .then((value) => Navigator.of(context).pop())
-                        .catchError((e) {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text(e)));
-                    });
+                    AuthService().logOut();
                   },
                   child: Text('Logout'))
             ],

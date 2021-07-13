@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vote_app/admin_module/ongoing_poll.dart';
 import 'package:vote_app/models/post.dart';
+import 'package:vote_app/services/auth.dart';
 import 'package:vote_app/services/database.dart';
 import 'package:vote_app/voter_module/post_detail.dart';
 
@@ -26,8 +29,8 @@ class _VoterHomeScreenState extends State<VoterHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final currentUser = Provider.of<GoogleSignInAccount>(context);
-    // String imageSrc = currentUser?.photoUrl ?? null;
+    final currentUser = Provider.of<User>(context);
+    String imageSrc = currentUser?.photoURL ?? null;
 
     void switchSelectedItem(int newIndex) {
       index = newIndex;
@@ -61,22 +64,27 @@ class _VoterHomeScreenState extends State<VoterHomeScreen> {
             // centerTitle: true,
             automaticallyImplyLeading: false,
             elevation: 0,
-            leading: Container(
-              width: 150,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar()),
-                  Text('User', style: TextStyle(fontSize: 18)),
-                ],
-              ),
+            leading: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircleAvatar(
+                      foregroundImage: NetworkImage(imageSrc),
+                    )),
+                Expanded(
+                  child: Text(
+                    currentUser.displayName,
+                    style: TextStyle(fontSize: 18),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
             actions: <Widget>[
               TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    AuthService().logOut();
                   },
                   child: Text('Logout'))
             ],

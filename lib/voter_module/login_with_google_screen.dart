@@ -45,9 +45,8 @@ class _LoginWithGoogleState extends State<LoginWithGoogle> {
               child: CupertinoButton(
                   borderRadius: BorderRadius.circular(45),
                   onPressed: () {
-                    AuthService().signIn().then((e) {
-                      Navigator.of(context).push(CupertinoPageRoute(
-                          builder: (_) => VoterHomeScreen()));
+                    AuthService().signInWithGoogle().then((e) {
+                      print('log in successful');
                     });
                   },
                   child: Container(

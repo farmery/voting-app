@@ -41,7 +41,7 @@ class WelcomeScreen extends StatelessWidget {
                 await Navigator.of(context)
                     .push(CupertinoPageRoute(builder: (context) {
                   return StreamProvider.value(
-                      value: AuthService().onCurrentUserChange(),
+                      value: AuthService().getAuthState(),
                       child: VoterWrapper());
                 }));
               },
