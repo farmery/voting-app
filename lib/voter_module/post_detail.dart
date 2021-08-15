@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vote_app/models/candidate.dart';
 import 'package:vote_app/models/post.dart';
 import 'package:vote_app/services/database.dart';
@@ -58,8 +59,10 @@ class _PostDetailState extends State<PostDetail> {
                             SizedBox(
                               width: 8,
                             ),
-                            Text(widget.titleOfPost,
-                                style: TextStyle(color: Colors.white)),
+                            Text(
+                              widget.titleOfPost,
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ],
                         ),
                       ),
@@ -84,7 +87,7 @@ class _PostDetailState extends State<PostDetail> {
                                               onPressed: () {
                                                 database
                                                     .castVote(candidates[i],
-                                                        'voterId')
+                                                        Uuid().v1())
                                                     .then((value) => showDialog(
                                                         context: context,
                                                         builder: (_) =>

@@ -13,6 +13,8 @@ class Database {
       FirebaseFirestore.instance.collection('users');
   CollectionReference statusCollection =
       FirebaseFirestore.instance.collection('status');
+  CollectionReference electionsCollection =
+      FirebaseFirestore.instance.collection('elections');
 
   //add candidate
   Future addCandidate(Candidate candidate) {
@@ -75,5 +77,34 @@ class Database {
   //get election status
   Future<Map> getElectionStatus() {
     return statusCollection.doc('status').get().then((value) => value.data());
+  }
+
+  //start election
+  Future startElection() {
+    return statusCollection
+        .doc('status')
+        .set({'status': 'onGoing'}).then((value) {
+      candidatesCollection.get().then((snapshot) {
+        for (QueryDocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      });
+
+      postsCollection.get().then((snapshot) {
+        for (QueryDocumentSnapshot doc in snapshot.docs) {
+          doc.reference.collection('votes').get().then((snapshot) {
+            for (QueryDocumentSnapshot doc in snapshot.docs) {
+              doc.reference.delete();
+            }
+          });
+        }
+      });
+
+      postsCollection.get().then((snapshot) {
+        for (QueryDocumentSnapshot doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      });
+    });
   }
 }

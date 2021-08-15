@@ -102,8 +102,10 @@ class _VoterHomeScreenState extends State<VoterHomeScreen> {
                   return status == 'ongoing'
                       ? PlaceYourVote()
                       : Container(
-                          child: Text('Election Ended',
-                              style: TextStyle(fontSize: 30)),
+                          child: Center(
+                            child: Text('Election Ended',
+                                style: TextStyle(fontSize: 30)),
+                          ),
                         );
                 }),
             Results(),
@@ -156,21 +158,45 @@ class Results extends StatelessWidget {
                       ),
                     ),
                     //list of posts
-                    Expanded(
-                      child: StreamBuilder<List<Post>>(
-                        stream: Database().getPosts(),
+
+                    FutureBuilder<Map>(
+                        future: Database().getElectionStatus(),
                         builder: (context, snapshot) {
-                          final posts = snapshot?.data ?? [];
-                          return ListView.builder(
-                            itemBuilder: (_, i) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: OnGoingPoll(posts: posts, i: i),
-                            ),
-                            itemCount: posts.length,
-                          );
-                        },
-                      ),
-                    ),
+                          String status;
+                          if (snapshot.data != null) {
+                            status = snapshot.data['status'];
+                          } else {
+                            status = 'onGoing';
+                          }
+
+                          return status != 'onGoing'
+                              ? Expanded(
+                                  child: StreamBuilder<List<Post>>(
+                                    stream: Database().getPosts(),
+                                    builder: (context, snapshot) {
+                                      final posts = snapshot?.data ?? [];
+                                      return ListView.builder(
+                                        itemBuilder: (_, i) => Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child:
+                                              OnGoingPoll(posts: posts, i: i),
+                                        ),
+                                        itemCount: posts.length,
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Center(
+                                  child: Column(
+                                    children: [
+                                      Icon(CupertinoIcons.timer,
+                                          size: 300, color: Colors.grey),
+                                      Text('Elections Results Pending...',
+                                          style: TextStyle(fontSize: 30)),
+                                    ],
+                                  ),
+                                );
+                        }),
                   ],
                 ),
               )),

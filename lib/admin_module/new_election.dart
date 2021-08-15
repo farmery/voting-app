@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vote_app/admin_module/add_candidate.dart';
-
 import 'package:vote_app/models/candidate.dart';
 import 'package:vote_app/models/post.dart';
 import 'package:vote_app/services/database.dart';
-
 import 'edit_post.dart';
 
 class NewElection extends StatefulWidget {
@@ -41,51 +39,76 @@ class _NewElectionState extends State<NewElection> {
                 child: FractionallySizedBox(
                   heightFactor: 0.98,
                   widthFactor: 1,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Row(
-                          children: <Widget>[
-                            SizedBox(width: 8),
-                            Icon(
-                              Icons.poll,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text('New Election',
-                                style: TextStyle(color: Colors.white)),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          color: Color(0xff021c1e),
-                          child: ListOfPostsFromDb(
-                            titleOfPost: titleOfElection,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          color: Color(0xff021c1e),
-                          child: NewPostWidget(
-                            titleOfElection: titleOfElection,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: FutureBuilder<Map>(
+                      future: Database().getElectionStatus(),
+                      builder: (context, snapshot) {
+                        String status;
+                        if (snapshot.data != null) {
+                          status = snapshot.data['status'];
+                        } else {
+                          status = 'onGoing';
+                        }
+
+                        return status != 'onGoing'
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        SizedBox(width: 8),
+                                        Icon(
+                                          Icons.poll,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                        Text('New Election',
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      color: Color(0xff021c1e),
+                                      child: ListOfPostsFromDb(
+                                        titleOfPost: titleOfElection,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      color: Color(0xff021c1e),
+                                      child: NewPostWidget(
+                                        titleOfElection: titleOfElection,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : CupertinoButton(
+                                child: Column(children: [
+                                  Text('Start New Election',
+                                      style: TextStyle(fontSize: 25)),
+                                  Icon(CupertinoIcons.add_circled_solid,
+                                      size: 50)
+                                ]),
+                                onPressed: () {
+                                  Database().startElection();
+                                });
+                      }),
                 )),
           ),
         ],

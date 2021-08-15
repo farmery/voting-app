@@ -53,7 +53,6 @@ class _AdminHomeState extends State<AdminHome> {
               ]),
           appBar: AppBar(
             leadingWidth: 150,
-            // centerTitle: true,
             automaticallyImplyLeading: false,
             iconTheme: IconThemeData(color: Colors.black),
             elevation: 0,
