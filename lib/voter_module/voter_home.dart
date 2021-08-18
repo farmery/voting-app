@@ -169,7 +169,7 @@ class Results extends StatelessWidget {
                             status = 'onGoing';
                           }
 
-                          return status != 'onGoing'
+                          return status == 'onGoing'
                               ? Expanded(
                                   child: StreamBuilder<List<Post>>(
                                     stream: Database().getPosts(),
