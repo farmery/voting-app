@@ -49,7 +49,7 @@ class _NewElectionState extends State<NewElection> {
                           status = 'onGoing';
                         }
 
-                        return status != 'onGoing'
+                        return status == 'onGoing'
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
@@ -107,6 +107,7 @@ class _NewElectionState extends State<NewElection> {
                                 ]),
                                 onPressed: () {
                                   Database().startElection();
+                                  setState(() {});
                                 });
                       }),
                 )),

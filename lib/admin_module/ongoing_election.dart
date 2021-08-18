@@ -75,7 +75,7 @@ class _OngoingElectionState extends State<OngoingElection> {
                             'End Election',
                           ),
                           onPressed: () {
-                            database.setElectionStatus(ElectionStatus.ended);
+                            database.setElectionStatus('ended');
                           }),
                     ),
                   ],

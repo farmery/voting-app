@@ -70,8 +70,8 @@ class Database {
   }
 
   //set election status
-  Future setElectionStatus(ElectionStatus status) {
-    return statusCollection.doc('status').set({'status': status.toString()});
+  Future setElectionStatus(String status) {
+    return statusCollection.doc('status').set({'status': status});
   }
 
   //get election status
