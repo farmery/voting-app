@@ -97,13 +97,13 @@ class _VoterHomeScreenState extends State<VoterHomeScreen> {
                   if (snapshot.data != null) {
                     status = snapshot.data['status'];
                   } else {
-                    status = 'ongoing';
+                    status = 'onGoing';
                   }
-                  return status == 'ongoing'
+                  return status == 'onGoing'
                       ? PlaceYourVote()
                       : Container(
                           child: Center(
-                            child: Text('Election Ended',
+                            child: Text('No Running Election',
                                 style: TextStyle(fontSize: 30)),
                           ),
                         );
