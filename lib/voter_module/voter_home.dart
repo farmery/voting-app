@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vote_app/admin_module/ongoing_poll.dart';
+import 'package:vote_app/models/candidate.dart';
 import 'package:vote_app/models/post.dart';
 import 'package:vote_app/services/auth.dart';
 import 'package:vote_app/services/database.dart';
@@ -89,27 +90,30 @@ class _VoterHomeScreenState extends State<VoterHomeScreen> {
                   child: Text('Logout'))
             ],
           ),
-          body: PageView(controller: pageController, children: [
-            FutureBuilder<Map>(
-                future: Database().getElectionStatus(),
-                builder: (context, snapshot) {
-                  String status;
-                  if (snapshot.data != null) {
-                    status = snapshot.data['status'];
-                  } else {
-                    status = 'onGoing';
-                  }
-                  return status == 'onGoing'
-                      ? PlaceYourVote()
-                      : Container(
-                          child: Center(
-                            child: Text('No Running Election',
-                                style: TextStyle(fontSize: 30)),
-                          ),
-                        );
-                }),
-            Results(),
-          ])),
+          body: PageView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: pageController,
+              children: [
+                FutureBuilder<Map>(
+                    future: Database().getElectionStatus(),
+                    builder: (context, snapshot) {
+                      String status;
+                      if (snapshot.data != null) {
+                        status = snapshot.data['status'];
+                      } else {
+                        status = 'onGoing';
+                      }
+                      return status == 'onGoing'
+                          ? PlaceYourVote()
+                          : Container(
+                              child: Center(
+                                child: Text('No Running Election',
+                                    style: TextStyle(fontSize: 30)),
+                              ),
+                            );
+                    }),
+                Results(),
+              ])),
     );
   }
 }
@@ -273,7 +277,22 @@ class PlaceYourVote extends StatelessWidget {
                                           },
                                           title: Text(
                                               posts.elementAt(i).titleOfPost),
-                                          subtitle: Text('10 candidates'),
+                                          subtitle: StreamBuilder<
+                                                  List<Candidate>>(
+                                              stream: database.getCandidates(
+                                                  Post(
+                                                      titleOfPost: posts
+                                                          .elementAt(i)
+                                                          .titleOfPost)),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.active) {
+                                                  return Text(
+                                                      '${snapshot.data.length} candidates');
+                                                } else {
+                                                  return Text('....');
+                                                }
+                                              }),
                                           tileColor: Color(0xff021c1e),
                                           trailing: FutureBuilder<Map>(
                                               future:
