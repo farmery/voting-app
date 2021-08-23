@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vote_app/services/auth.dart';
 
 import 'voter_home.dart';
@@ -46,7 +48,15 @@ class _LoginWithGoogleState extends State<LoginWithGoogle> {
                   borderRadius: BorderRadius.circular(45),
                   onPressed: () {
                     AuthService().signInWithGoogle().then((e) {
-                      print('log in successful');
+                      if (e == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                'Error: Not a redeemer\'s university email')));
+                      } else {
+                        print('log in successful');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Successful')));
+                      }
                     });
                   },
                   child: Container(

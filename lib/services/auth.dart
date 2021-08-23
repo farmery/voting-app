@@ -14,21 +14,28 @@ class AuthService {
     User user;
     GoogleSignInAccount googleSignInAccount = await _googleSignIn.signIn();
 
-    if (googleSignInAccount != null) {
-      final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount.authentication;
+    final regex = RegExp(r'^[a-z0-9](\.?[a-z0-9]){5,}@run\.edu\.ng$');
+    if (regex.hasMatch(googleSignInAccount.email)) {
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
+        final AuthCredential credential = GoogleAuthProvider.credential(
+            accessToken: googleSignInAuthentication.accessToken,
+            idToken: googleSignInAuthentication.idToken);
 
-      try {
-        final UserCredential userCredential =
-            await auth.signInWithCredential(credential);
-        user = userCredential.user;
-      } catch (e) {}
+        try {
+          final UserCredential userCredential =
+              await auth.signInWithCredential(credential);
+          user = userCredential.user;
+        } catch (e) {}
+      }
+    } else {
+      googleSignInAccount.clearAuthCache();
+      _googleSignIn.signOut();
+      return null;
     }
+
     return user;
   }
 
