@@ -50,11 +50,11 @@ class Database {
   }
 
   // cast vote
-  Future castVote(Candidate candidate, String voterId) {
+  Future castVote(Candidate candidate, String voterId, String postTitle) {
     return postsCollection
         .doc(candidate.post)
         .collection('votes')
-        .doc(voterId)
+        .doc(voterId + postTitle)
         .set({'candidateName': candidate.candidateName, 'voter': voterId});
   }
 

@@ -273,6 +273,9 @@ class PlaceYourVote extends StatelessWidget {
                                                           titleOfPost: posts
                                                               .elementAt(i)
                                                               .titleOfPost,
+                                                          user:
+                                                              Provider.of<User>(
+                                                                  context),
                                                         )));
                                           },
                                           title: Text(

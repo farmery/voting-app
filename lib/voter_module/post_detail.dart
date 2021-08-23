@@ -1,14 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 import 'package:vote_app/models/candidate.dart';
 import 'package:vote_app/models/post.dart';
 import 'package:vote_app/services/database.dart';
 
 class PostDetail extends StatefulWidget {
+  final User user;
   final String titleOfPost;
   const PostDetail({
     Key key,
+    this.user,
     this.titleOfPost,
   }) : super(key: key);
 
@@ -86,8 +88,10 @@ class _PostDetailState extends State<PostDetail> {
                                             trailing: CupertinoButton(
                                               onPressed: () {
                                                 database
-                                                    .castVote(candidates[i],
-                                                        Uuid().v1())
+                                                    .castVote(
+                                                        candidates[i],
+                                                        widget.user.email,
+                                                        widget.titleOfPost)
                                                     .then((value) => showDialog(
                                                         context: context,
                                                         builder: (_) =>

@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:vote_app/services/auth.dart';
 
-import 'voter_home.dart';
+import 'package:vote_app/services/auth.dart';
 
 class LoginWithGoogle extends StatefulWidget {
   @override
