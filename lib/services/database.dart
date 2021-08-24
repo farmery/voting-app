@@ -50,12 +50,26 @@ class Database {
   }
 
   // cast vote
-  Future castVote(Candidate candidate, String voterId, String postTitle) {
-    return postsCollection
+  Future<String> castVote(
+      Candidate candidate, String voterId, String postTitle) async {
+    bool votedAlready = await postsCollection
         .doc(candidate.post)
         .collection('votes')
         .doc(voterId + postTitle)
-        .set({'candidateName': candidate.candidateName, 'voter': voterId});
+        .get()
+        .then((value) => value.data().containsValue(candidate.candidateName));
+    if (!votedAlready) {
+      return postsCollection
+          .doc(candidate.post)
+          .collection('votes')
+          .doc(voterId + postTitle)
+          .set({
+        'candidateName': candidate.candidateName,
+        'voter': voterId
+      }).then((value) => 'successful');
+    } else {
+      return null;
+    }
   }
 
   //get votes
