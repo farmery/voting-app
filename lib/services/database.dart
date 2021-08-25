@@ -57,7 +57,9 @@ class Database {
         .collection('votes')
         .doc(voterId + postTitle)
         .get()
-        .then((value) => value.data().containsValue(candidate.candidateName));
+        .then((value) => value.exists
+            ? value.data().containsValue(candidate.candidateName)
+            : false);
     if (!votedAlready) {
       return postsCollection
           .doc(candidate.post)
